@@ -16,6 +16,6 @@ const val CHTYPE_FILE = 3
 const val CHTYPE_VOICE = 4
 const val CHTYPE_MAX = 8
 
-const val MAX_PACKET_SIZE = 1242
+const val MAX_PACKET_SIZE = 1228
 
 const val NMT_Welcome = 1
