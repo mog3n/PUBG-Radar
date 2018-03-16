@@ -133,7 +133,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
     private lateinit var DaMap: Texture
     private lateinit var iconImages: Icons
     private lateinit var corpseboximage: Texture
-    private lateinit var airdropimage: Texture
+    private lateinit var AirDropAllTheColors: Texture
     private lateinit var bgcompass: Texture
     private lateinit var menu: Texture
     private lateinit var largeFont: BitmapFont
@@ -154,20 +154,22 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
     private lateinit var hubpanelblank: Texture
     private lateinit var vehicle: Texture
     private lateinit var boato: Texture
-    private lateinit var bikeo: Texture
-    private lateinit var bike3xo: Texture
-    private lateinit var buggyo: Texture
+
+
     private lateinit var vano: Texture
-    private lateinit var pickupo: Texture
     private lateinit var vehicleo: Texture
     private lateinit var jetskio: Texture
     private lateinit var plane: Texture
     private lateinit var boat: Texture
-    private lateinit var bike: Texture
-    private lateinit var bike3x: Texture
-    private lateinit var buggy: Texture
+    private lateinit var BikeBLUE: Texture
+    private lateinit var BikeRED: Texture
+    private lateinit var Bike3BLUE: Texture
+    private lateinit var Bike3RED: Texture
+    private lateinit var pickupBLUE: Texture
+    private lateinit var pickupRED: Texture
+    private lateinit var BuggyBLUE: Texture
+    private lateinit var BuggyRED: Texture
     private lateinit var van: Texture
-    private lateinit var pickup: Texture
     private lateinit var arrow: Texture
     private lateinit var arrowsight: Texture
     private lateinit var jetski: Texture
@@ -373,7 +375,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
         menu = Texture(Gdx.files.internal("images/menu.png"))
         hubpanelblank = Texture(Gdx.files.internal("images/hub_panel_blank_long.png"))
         corpseboximage = Texture(Gdx.files.internal("icons/box.png"))
-        airdropimage = Texture(Gdx.files.internal("icons/airdrop.png"))
+        AirDropAllTheColors = Texture(Gdx.files.internal("icons/AirDropAllTheColors.png"))
         vehicle = Texture(Gdx.files.internal("images/vehicle.png"))
         vehicleo = Texture(Gdx.files.internal("images/vehicleo.png"))
         arrow = Texture(Gdx.files.internal("images/arrow.png"))
@@ -383,19 +385,21 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
         arrowsight = Texture(Gdx.files.internal("images/red_view_line.png"))
         parachute = Texture(Gdx.files.internal("images/parachute.png"))
         boat = Texture(Gdx.files.internal("images/boat.png"))
-        bike = Texture(Gdx.files.internal("images/bike.png"))
-        jetski = Texture(Gdx.files.internal("images/jetski.png"))
-        bike3x = Texture(Gdx.files.internal("images/bike3x.png"))
-        pickup = Texture(Gdx.files.internal("images/pickup.png"))
-        van = Texture(Gdx.files.internal("images/van.png"))
-        buggy = Texture(Gdx.files.internal("images/buggy.png"))
         boato = Texture(Gdx.files.internal("images/boato.png"))
-        bikeo = Texture(Gdx.files.internal("images/bikeo.png"))
+        BikeBLUE = Texture(Gdx.files.internal("images/BikeBLUE.png"))
+        BikeRED = Texture(Gdx.files.internal("images/BikeRED.png"))
+        Bike3BLUE = Texture(Gdx.files.internal("images/Bike3BLUE.png"))
+        Bike3RED = Texture(Gdx.files.internal("images/Bike3RED.png"))
+        pickupBLUE = Texture(Gdx.files.internal("images/pickupBLUE.png"))
+        pickupRED = Texture(Gdx.files.internal("images/pickupRED.png"))
+        BuggyBLUE = Texture(Gdx.files.internal("images/BuggyBLUE.png"))
+        BuggyRED = Texture(Gdx.files.internal("images/BuggyRED.png"))
+
+        jetski = Texture(Gdx.files.internal("images/jetski.png"))
         jetskio = Texture(Gdx.files.internal("images/jetskio.png"))
-        bike3xo = Texture(Gdx.files.internal("images/bike3xo.png"))
-        pickupo = Texture(Gdx.files.internal("images/pickupo.png"))
+        van = Texture(Gdx.files.internal("images/van.png"))
         vano = Texture(Gdx.files.internal("images/vano.png"))
-        buggyo = Texture(Gdx.files.internal("images/buggyo.png"))
+
         grenade = Texture(Gdx.files.internal("images/grenade.png"))
         iconImages = Icons(Texture(Gdx.files.internal("images/item-sprites.png")), 64)
         var cur = 0
@@ -843,9 +847,9 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                 val (x, y) = it
                 val (sx, sy) = Vector2(x, y).mapToWindow()
                 val syFix = windowHeight - sy
-                val iconScale = 2f / camera.zoom
-                spriteBatch.draw(airdropimage, sx - iconScale / 2, syFix + iconScale / 2, iconScale, -iconScale,
-                        0, 0, 128, 128,
+                val iconScale = 1f / camera.zoom
+                spriteBatch.draw(AirDropAllTheColors, sx - iconScale / 2, syFix + iconScale / 2, iconScale, -iconScale,
+                        0, 0, 64, 64,
                         false, true)
             }
 
@@ -1053,7 +1057,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                         if (VehicleInfoToggles == 2)compaseFont.draw(spriteBatch, "BIKE", sx + 15, windowHeight - sy - 2)
 
                         spriteBatch.draw(
-                                bike,
+                                BikeBLUE,
                                 sx + 2, windowHeight - sy - 2, 4.toFloat() / 2,
                                 4.toFloat() / 2, 4.toFloat(), 4.toFloat(), iconScale / 3, iconScale / 3,
                                 dir * -1, 0, 0, 64, 64, true, false
@@ -1062,7 +1066,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                         val v_y = actor.velocity.y
                         if (actor.attachChildren.isNotEmpty() || v_x * v_x + v_y * v_y > 40) {
                             spriteBatch.draw(
-                                    bikeo,
+                                            BikeRED,
                                     sx + 2, windowHeight - sy - 2, 4.toFloat() / 2,
                                     4.toFloat() / 2, 4.toFloat(), 4.toFloat(), iconScale / 3, iconScale / 3,
                                     dir * -1, 0, 0, 64, 64, true, false
@@ -1078,7 +1082,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                         if (VehicleInfoToggles == 2) compaseFont.draw(spriteBatch, "BUGGY", sx + 15, windowHeight - sy - 2)
 
                         spriteBatch.draw(
-                                buggy,
+                                BuggyBLUE,
                                 sx + 2, windowHeight - sy - 2,
                                 2.toFloat() / 2, 2.toFloat() / 2,
                                 2.toFloat(), 2.toFloat(),
@@ -1089,7 +1093,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                         val v_y = actor.velocity.y
                         if (actor.attachChildren.isNotEmpty() || v_x * v_x + v_y * v_y > 40) {
                             spriteBatch.draw(
-                                    buggyo,
+                                    BuggyRED,
                                     sx + 2, windowHeight - sy - 2,
                                     2.toFloat() / 2, 2.toFloat() / 2,
                                     2.toFloat(), 2.toFloat(),
@@ -1107,7 +1111,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                         if (VehicleInfoToggles == 2) compaseFont.draw(spriteBatch, "BIKE", sx + 15, windowHeight - sy - 2)
 
                         spriteBatch.draw(
-                                bike3x,
+                                Bike3BLUE,
                                 sx + 2, windowHeight - sy - 2, 4.toFloat() / 2, 4.toFloat() / 2,
                                 4.toFloat(), 4.toFloat(), iconScale / 2, iconScale / 2,
                                 dir * -1, 0, 0, 64, 64, true, false
@@ -1116,7 +1120,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                         val v_y = actor.velocity.y
                         if (actor.attachChildren.isNotEmpty() || v_x * v_x + v_y * v_y > 40) {
                             spriteBatch.draw(
-                                    bike3xo,
+                                    Bike3RED,
                                     sx + 2, windowHeight - sy - 2, 4.toFloat() / 2, 4.toFloat() / 2,
                                     4.toFloat(), 4.toFloat(), iconScale / 2, iconScale / 2,
                                     dir * -1, 0, 0, 64, 64, true, false
@@ -1164,7 +1168,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                         if (VehicleInfoToggles == 2)compaseFont.draw(spriteBatch, "PICKUP", sx + 15, windowHeight - sy - 2)
 
                         spriteBatch.draw(
-                                pickup,
+                                pickupBLUE,
                                 sx + 2, windowHeight - sy - 2,
                                 2.toFloat() / 2, 2.toFloat() / 2,
                                 2.toFloat(), 2.toFloat(),
@@ -1176,7 +1180,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                         val v_y = actor.velocity.y
                         if (actor.attachChildren.isNotEmpty() || v_x * v_x + v_y * v_y > 40) {
                             spriteBatch.draw(
-                                    pickupo,
+                                    pickupRED,
                                     sx + 2, windowHeight - sy - 2,
                                     2.toFloat() / 2, 2.toFloat() / 2,
                                     2.toFloat(), 2.toFloat(),
@@ -1510,7 +1514,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
         hpgreen.dispose()
         hpred.dispose()
         corpseboximage.dispose()
-        airdropimage.dispose()
+        AirDropAllTheColors.dispose()
         vehicle.dispose()
         iconImages.iconSheet.dispose()
         compaseFont.dispose()
