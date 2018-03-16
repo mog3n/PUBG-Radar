@@ -1,2 +1,2 @@
-mvn verify install
+mvn package
 pause

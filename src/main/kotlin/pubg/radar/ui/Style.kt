@@ -10,6 +10,15 @@ const val visionRadius = mapWidth / 4
 const val attackLineDuration = 1000
 const val attackMeLineDuration = 10000
 const val pinRadius = 4000f
+
+const val directionRadius = 16000f
+const val healthBarWidth = 15000f
+const val healthBarHeight = 2000f
+const val playerRadius = 4000f
+const val corpseRadius = 150f
+const val itemRadius = 100f
+
+
 val safeDirectionColor = Color(0.12f, 0.56f, 1f, 0.5f)
 val visionColor = Color(1f, 1f, 1f, 0.1f)
 val attackLineColor = Color(1.0f, 0f, 0f, 1f)

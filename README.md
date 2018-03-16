@@ -1,15 +1,17 @@
 # PUBG-Radar ![Imgur](https://i.imgur.com/n3JtN5d.png)
-## This Radar is 100% FREE
+
 
 ### Updated for Newest Patch
-#### Beware this is a ROUGH update, it is RIDDLED with bugs, but it semi works.
 
-### Join us on [Discord for updates](https://discord.gg/mguV7Ba)
+#Beware this is a ROUGH update, it is RIDDLED with bugs, but it semi works.
+
+join us on [Discord for updates](https://discord.me/radarproject)
 
 
 'Reverted' Back to an older Commit Due to CharMoveComp No longer being used.
 
 SDK Dumped by (legitnutty33)
+
 #### By engaging with this repository you explicitly agree with the terms of the Unlicense.
 
 
@@ -20,28 +22,27 @@ SDK Dumped by (legitnutty33)
 You can't filter level 3 gear (always enabled)
 
 #### Item Filter:
-* HOME -> Show / Hide Compass
-* NUMPAD_0 -> Filter Throwables
-* NUMPAD_1 -> Filter Attachments
-* NUMPAD_2 -> Filter Scopes
-* NUMPAD_3 -> Filter Ammo
-* NUMPAD_4 -> Filter Weapons
-* NUMPAD_5 -> Filter Level 2 Gear          
-* NUMPAD_6 -> Filter Meds
-
-#### Item Offset Tweaker Keybinds
-* F5 -> Item Offset X++
-* F6 -> Item Offset X--
-* F7 -> Item Offset Y++
-* F8 -> Item Offset Y--
+* NUMPAD_1 -> Filter Weapon
+* NUMPAD_2 -> Filter Equip
+* NUMPAD_3 -> Filter Meds
+* NUMPAD_4 -> Filter Throw
+* NUMPAD_5 -> Filter Attach
+* NUMPAD_6 -> Filter Scope
+* NUMPAD_0 -> Filter Ammo
 
 #### Zooms:
-* NUMPAD_7 -> Scouting
-* NUMPAD_8 -> Scout/Loot
-* NUMPAD_9 -> Looting
-* F9 ->  Camera Zoom ++
-* F10 -> Camera Zoom --
-* F11 -> Toggle View Line
+* NUMPAD_8 -> Looting - Combat -Scouting
+* NUMPAD_PLUS ->  Camera Zoom ++
+* NUMPAD_MINUS -> Camera Zoom --
+
+#### Other
+* F1 -> Change Player Info (Name, Distance, HP, Weapon)
+* F2 -> Toggle Compass
+* F3 -> Toggle Grind (100m)
+* F4 -> Toggle View Line
+* F5 -> Toggle Vehicles (icon, name or both)
+* F12 -> Toggle View Line
+
 
 ## How to: Build, Install and RUN PUBG Radar
 https://youtu.be/H_gud8xuP-s
@@ -164,9 +165,3 @@ for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
 java -jar target\pubg-radar-1.0-SNAPSHOT-jar-with-dependencies.jar %_IPaddr% PortFilter %_IPaddr% Offline
 
 ```
-
-* BTC: 1AM5iNRccK2Wsy5ACnraWtmpggck5m7DpL
-* ETH: 0x399647447Ae6B9C568526f9F3159F08E5289c29c
-* BCH: qr8r0weyw4qcmv3quvypw83qhz9vm3a7cyjdysvjzc
-
-If someone still wanna donate for do instructions and etc
