@@ -1,21 +1,14 @@
-# PUBG-Radar ![Imgur](https://i.imgur.com/n3JtN5d.png)
-
-
-### Updated for Newest Patch
-
-#Beware this is a ROUGH update, it is RIDDLED with bugs, but it semi works.
-
-join us on [Discord for updates](https://discord.me/radarproject)
-
-
-'Reverted' Back to an older Commit Due to CharMoveComp No longer being used.
-
-SDK Dumped by (legitnutty33)
+# PUBG-Radar ![Imgur](https://i.imgur.com/WHUDRjh.png)
 
 #### By engaging with this repository you explicitly agree with the terms of the Unlicense.
 
+### Updated for Newest Patch
 
-![Imgur](https://i.imgur.com/Pc7foHp.gif)
+#Beware this is a ROUGH update
+
+join us on [Discord for updates](https://discord.me/radarproject)
+
+SDK Dumped by (legitnutty33) Thank You!
 
 
 ### Key Kinds
