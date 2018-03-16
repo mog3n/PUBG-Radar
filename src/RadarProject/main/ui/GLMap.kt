@@ -864,7 +864,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
             airDropLocation.values.forEach {
                 val (x, y) = it
                 val airdropcoords = (Vector2(x, y))
-                color = GREEN
+                color = YELLOW
                 line(selfCoords, airdropcoords)
             }
             Gdx.gl.glDisable(GL20.GL_BLEND)
