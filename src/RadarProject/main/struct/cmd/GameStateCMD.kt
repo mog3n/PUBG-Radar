@@ -115,18 +115,17 @@ object GameStateCMD : GameListener {
                     val bTimerPaused = propertyBool()
                     val b = bTimerPaused
                 }
-//        30->{
-//          print("")
-//        }
-//        31->{
-//          print("")
-//        }
+                30 -> {
+                    val bShowLastCircleMark = propertyBool()
+                }
+                31 -> {
+                    val bCanShowLastCircleMark = propertyBool()
+                }
                 32 -> {
                     NumJoinPlayers = propertyInt()
                 }
                 33 -> {
                     NumAlivePlayers = propertyInt()
-//          println(NumAlivePlayers)
                 }
                 34 -> {
                     val NumAliveZombiePlayers = propertyInt()
@@ -167,44 +166,41 @@ object GameStateCMD : GameListener {
                     RedZoneRadius = propertyFloat()
                     val b = RedZoneRadius
                 }
-//        44->{
-//
-//        }
-                45 -> {
+                44 -> {
                     TotalReleaseDuration = propertyFloat()
                     val b = TotalReleaseDuration
                 }
-                46 -> {
+                45 -> {
                     ElapsedReleaseDuration = propertyFloat()
                     val b = ElapsedReleaseDuration
                 }
-                47 -> {
+                46 -> {
                     TotalWarningDuration = propertyFloat()
                 }
-                48 -> {
+                47 -> {
                     ElapsedWarningDuration = propertyFloat()
                 }
-                49 -> {
+                48 -> {
                     val bIsGasRelease = propertyBool()
                 }
-                50 -> {
+                49 -> {
                     val bIsTeamMatch = propertyBool()
                     val b = bIsTeamMatch
                 }
-                51 -> {
+                50 -> {
                     val bIsZombieMode = propertyBool()
                 }
-                52 -> {
+                51 -> {
                     val pos = propertyVector()
                     SafetyZoneBeginPosition.set(pos.x, pos.y)
                 }
-                53 -> {
+                52 -> {
                     SafetyZoneBeginRadius = propertyFloat()
                 }
-                54 -> {
+                53 -> {
                     val MatchStartType = propertyByte()
                 }
-                55 -> return false
+                54 -> return false
                 else -> return false
             }
             return true

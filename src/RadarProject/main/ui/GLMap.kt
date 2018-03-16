@@ -847,7 +847,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                 val (x, y) = it
                 val (sx, sy) = Vector2(x, y).mapToWindow()
                 val syFix = windowHeight - sy
-                val iconScale = 1f / camera.zoom
+                val iconScale = 4f / camera.zoom
                 spriteBatch.draw(AirDropAllTheColors, sx - iconScale / 2, syFix + iconScale / 2, iconScale, -iconScale,
                         0, 0, 64, 64,
                         false, true)
