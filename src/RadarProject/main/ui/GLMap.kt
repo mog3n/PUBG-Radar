@@ -575,7 +575,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
 
 
             // ITEM ESP FILTER PANEL
-            spriteBatch.draw(hubpanelblank, 30f, windowHeight - 60f)
+            spriteBatch.draw(hubpanelblank, 30f, windowHeight - 106f)
 
             // This is what you were trying to do
             if (filterWeapon != 1)
