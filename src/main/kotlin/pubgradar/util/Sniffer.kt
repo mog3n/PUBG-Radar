@@ -1,13 +1,15 @@
-package pubgradar
+package pubgradar.util
 
 import com.badlogic.gdx.math.Vector2
 import org.pcap4j.core.*
 import org.pcap4j.core.BpfProgram.BpfCompileMode.OPTIMIZE
 import org.pcap4j.core.PcapNetworkInterface.PromiscuousMode.PROMISCUOUS
 import org.pcap4j.packet.*
-import pubgradar.SniffOption.*
+import pubgradar.Args
+import pubgradar.GameListener
+import pubgradar.util.SniffOption.*
 import pubgradar.deserializer.*
-import java.io.*
+import pubgradar.register
 import java.io.File.separator
 import java.net.Inet4Address
 import java.net.InetAddress
@@ -47,7 +49,7 @@ class Sniffer {
     var selfCoords = Vector2()
 
     init {
-      register(this)
+        register(this)
 
       val nif: PcapNetworkInterface?
       val sniffOption: SniffOption?
@@ -67,9 +69,9 @@ class Sniffer {
       nif = devDesc.dev
       val localAddr = if (Args.size == 3) InetAddress.getByName(Args[2]) as Inet4Address else devDesc.address
       sniffOption = SniffOption.valueOf(Args[1])
-      this.nif = nif
-      this.targetAddr = localAddr
-      this.sniffOption = sniffOption
+      Companion.nif = nif
+      targetAddr = localAddr
+      Companion.sniffOption = sniffOption
 
     }
 
@@ -163,7 +165,7 @@ class Sniffer {
             try {
               val packet = handle.nextPacket ?: break
               val ip = packet[IpPacket::class.java]
-              val udp = Sniffer.udp_payload(packet) ?: continue
+              val udp = udp_payload(packet) ?: continue
               val raw = udp.payload.rawData
 
               if (udp.header.dstPort.valueAsInt() in 7000..7999)

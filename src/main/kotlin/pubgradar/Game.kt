@@ -1,6 +1,7 @@
 package pubgradar
 
 import pubgradar.ui.GLMap
+import pubgradar.util.Sniffer
 import java.util.Collections.newSetFromMap
 import java.util.concurrent.ConcurrentHashMap
 

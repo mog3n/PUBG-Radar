@@ -1,6 +1,6 @@
 package pubgradar
 
-import pubgradar.Sniffer.Companion.localAddr
+import pubgradar.util.Sniffer.Companion.localAddr
 import pubgradar.util.notify
 import java.io.*
 import java.net.Inet4Address

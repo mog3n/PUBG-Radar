@@ -4,6 +4,7 @@ import org.pcap4j.core.Pcaps
 import org.pcap4j.packet.IpPacket
 import pubgradar.deserializer.*
 import pubgradar.ui.GLMap
+import pubgradar.util.Sniffer
 import kotlin.concurrent.thread
 
 fun sniffLocationOffline() {

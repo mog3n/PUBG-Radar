@@ -1,5 +1,6 @@
 package pubgradar.struct.CMD
 
+import pubg.radar.debugln
 import pubgradar.deserializer.channel.ActorChannel.Companion.droppedItemToItem
 import pubgradar.struct.*
 
@@ -16,7 +17,8 @@ object DroppedItemCMD {
       }
       return true
     }
-  }catch (e: Exception){ println("DroppedItemRep is throwing somewhere: $e ${e.stackTrace} ${e.message}") }
+  }catch (e: Exception){
+       debugln{("DroppedItemRep is throwing somewhere: $e ${e.stackTrace} ${e.message}")} }
       return false
   }
 }

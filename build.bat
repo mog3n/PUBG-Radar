@@ -9,8 +9,8 @@ echo ---------------------------------------------------------------------
 echo YOU NEED TO INSTALL MAVEN AND JDK8 AND JAVA8 BEFORE RUNNING THIS
 echo ---------------------------------------------------------------------
 
-timeout 10
+timeout 5
 
 mvn clean verify install
 
-timeout 10
+pause

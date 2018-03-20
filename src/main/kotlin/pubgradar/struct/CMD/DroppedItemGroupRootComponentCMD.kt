@@ -1,5 +1,6 @@
 package pubgradar.struct.CMD
 
+import pubg.radar.debugln
 import pubgradar.deserializer.channel.ActorChannel.Companion.droppedItemCompToItem
 import pubgradar.deserializer.channel.ActorChannel.Companion.itemBag
 import pubgradar.deserializer.channel.ActorChannel.Companion.droppedItemLocation
@@ -52,5 +53,5 @@ try{  val arraySize=readUInt16()
   itemBag[actor.netGUID]=items
   for (removedComp in toRemove)
     droppedItemLocation.remove(droppedItemCompToItem[removedComp] ?: continue)
-}catch (e: Exception){ println("Item Bag is throwing somewhere: $e ${e.stackTrace} ${e.message}") }
+}catch (e: Exception){ debugln{("Item Bag is throwing somewhere: $e ${e.stackTrace} ${e.message}")} }
 }

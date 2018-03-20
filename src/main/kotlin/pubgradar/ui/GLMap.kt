@@ -23,8 +23,8 @@ import com.badlogic.gdx.math.*
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL13.GL_CLAMP_TO_BORDER
 import pubgradar.*
-import pubgradar.Sniffer.Companion.localAddr
-import pubgradar.Sniffer.Companion.sniffOption
+import pubgradar.util.Sniffer.Companion.localAddr
+import pubgradar.util.Sniffer.Companion.sniffOption
 import pubgradar.deserializer.channel.ActorChannel.Companion.actorHasWeapons
 import pubgradar.deserializer.channel.ActorChannel.Companion.actors
 import pubgradar.deserializer.channel.ActorChannel.Companion.airDropLocation
@@ -47,7 +47,6 @@ import pubgradar.struct.PlayerState
 import pubgradar.struct.Team
 import pubgradar.struct.Weapon
 import pubgradar.struct.CMD.*
-import pubgradar.struct.CMD.ActorCMD.actorWithPlayerState
 import pubgradar.struct.CMD.GameStateCMD.ElapsedWarningDuration
 import pubgradar.struct.CMD.GameStateCMD.MatchElapsedMinutes
 import pubgradar.struct.CMD.GameStateCMD.NumAlivePlayers
@@ -71,6 +70,7 @@ import kotlin.collections.HashMap
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.math.*
+import pubg.radar.LogLevel.*
 
 typealias renderInfo = tuple4<Actor, Float, Float, Float>
 
@@ -326,8 +326,8 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
             NUMPAD_0 -> filterAmmo = filterAmmo * -1
 
         // Zoom In/Out || Overrides Max/Min Zoom
-            MINUS -> camera.zoom = camera.zoom + 0.00525f
-            PLUS -> camera.zoom = camera.zoom - 0.00525f
+            MINUS -> mapCamera.zoom = mapCamera.zoom + 0.00525f
+            PLUS -> mapCamera.zoom = mapCamera.zoom - 0.00525f
 
         }
         return false
