@@ -1,27 +1,21 @@
-# PUBG-Radar ![Imgur](https://i.imgur.com/WHUDRjh.png)
-
 #### By engaging with this repository you explicitly agree with the terms of the Unlicense.
 
-### Updated for Newest Patch
+![Imgur](https://i.imgur.com/PDjwkyR.jpg)
 
-#Beware this is a ROUGH update
 
 join us on [Discord for updates](https://discord.me/radarproject)
 
 SDK Dumped by (legitnutty33) Thank You!
 
 
-### Key Kinds
-You can't filter level 3 gear (always enabled)
-
 #### Item Filter:
 * NUMPAD_1 -> Filter Weapon
 * NUMPAD_2 -> Filter Equip
 * NUMPAD_3 -> Filter Meds
-* NUMPAD_4 -> Filter Throw
-* NUMPAD_5 -> Filter Attach
-* NUMPAD_6 -> Filter Scope
-* NUMPAD_0 -> Filter Ammo
+* NUMPAD_4 -> Filter Attach
+* NUMPAD_5 -> Filter Scope
+* NUMPAD_6 -> Filter Ammo
+* NUMPAD_0 -> Filter Throw
 
 #### Zooms:
 * NUMPAD_8 -> Looting - Combat -Scouting
@@ -31,7 +25,7 @@ You can't filter level 3 gear (always enabled)
 #### Other
 * F1 -> Change Player Info (Name, Distance, HP, Weapon)
 * F2 -> Toggle Compass
-* F3 -> Toggle Grind (100m)
+* F3 -> Toggle Mini Map
 * F4 -> Toggle View Line
 * F5 -> Toggle Vehicles (icon, name or both)
 * F12 -> Toggle View Line
