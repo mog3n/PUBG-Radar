@@ -1,14 +1,15 @@
-package pubgradar.struct.cmd
+package main.struct.cmd
 
 import main.deserializer.channel.ActorChannel.Companion.droppedItemCompToItem
+import main.deserializer.channel.ActorChannel.Companion.droppedItemGroup
 import main.deserializer.channel.ActorChannel.Companion.droppedItemLocation
 import main.deserializer.channel.ActorChannel.Companion.itemBag
+import main.struct.*
+import main.util.DynamicArray
 import main.struct.Actor
 import main.struct.Bunch
 import main.struct.NetGuidCacheObject
 import main.struct.NetworkGUID
-import pubgradar.struct.*
-import pubgradar.util.DynamicArray
 
 object DroppedItemGroupRootComponentCMD {
     fun process(actor: Actor, bunch: Bunch, repObj: NetGuidCacheObject?, waitingHandle: Int, data: HashMap<String, Any?>): Boolean {
@@ -21,6 +22,7 @@ object DroppedItemGroupRootComponentCMD {
         return true
     }
 }
+
 fun Bunch.updateItemBag(actor: Actor) {
     val arraySize=readUInt16()
     val oldSize:Int

@@ -14,8 +14,10 @@ import main.struct.cmd.PlayerStateCMD.selfID
 import main.util.*
 import java.util.concurrent.ConcurrentHashMap
 import main.struct.cmd.receiveProperties
+import main.struct.Team
 import main.ui.itemIcons
-import pubgradar.util.DynamicArray
+import main.util.DynamicArray
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class ActorChannel(ChIndex: Int, client: Boolean = true): Channel(ChIndex, CHTYPE_ACTOR, client) {
     companion object: GameListener {
@@ -27,15 +29,16 @@ class ActorChannel(ChIndex: Int, client: Boolean = true): Channel(ChIndex, CHTYP
         val visualActors = ConcurrentHashMap<NetworkGUID, Actor>()
         val airDropLocation = ConcurrentHashMap<NetworkGUID, Vector3>()
         val droppedItemLocation = ConcurrentHashMap<NetworkGUID, tuple2<Vector2, String>>()
-        val droppedItemToItem = ConcurrentHashMap<NetworkGUID, NetworkGUID>()
+         val droppedItemToItem = ConcurrentHashMap<NetworkGUID, NetworkGUID>()
         val droppedItemGroup = ConcurrentHashMap<NetworkGUID, DynamicArray<NetworkGUID?>>()
         val droppedItemCompToItem = ConcurrentHashMap<NetworkGUID, NetworkGUID>()
-        val crateitems = ConcurrentHashMap<NetworkGUID, DynamicArray<NetworkGUID?>>()
+        val crateitems = ConcurrentHashMap<NetworkGUID,DynamicArray<NetworkGUID?>>()
         val corpseLocation = ConcurrentHashMap<NetworkGUID, Vector3>()
         val actorHasWeapons = ConcurrentHashMap<NetworkGUID, DynamicArray<NetworkGUID?>>()
-        val weapons = ConcurrentHashMap<NetworkGUID, Actor>()
-        val itemBag = ConcurrentHashMap<NetworkGUID, DynamicArray<NetworkGUID?>>()
-
+        val weapons = ConcurrentHashMap<NetworkGUID,Actor>()
+        val firing = ConcurrentLinkedQueue<tuple2<NetworkGUID,Long>>()
+        val itemBag = ConcurrentHashMap<NetworkGUID,DynamicArray<NetworkGUID?>>()
+        val teams = ConcurrentHashMap<NetworkGUID,Team>()
 
 
         override fun onGameOver() {
@@ -50,6 +53,7 @@ class ActorChannel(ChIndex: Int, client: Boolean = true): Channel(ChIndex, CHTYP
             corpseLocation.clear()
             weapons.clear()
             actorHasWeapons.clear()
+            firing.clear()
         }
     }
 
@@ -64,7 +68,7 @@ class ActorChannel(ChIndex: Int, client: Boolean = true): Channel(ChIndex, CHTYP
         }
         ProcessBunch(bunch)
     }
-    fun ProcessBunch(bunch:Bunch) {
+    fun ProcessBunch(bunch: Bunch) {
         if (client && actor == null) {
             if (!bunch.bOpen) {
                 return
@@ -85,15 +89,16 @@ class ActorChannel(ChIndex: Int, client: Boolean = true): Channel(ChIndex, CHTYP
             //header
             val bHasRepLayout = bunch.readBit()
             val bIsActor = bunch.readBit()
-            var repObj:NetGuidCacheObject?
+            var repObj: NetGuidCacheObject?
             if (bIsActor) {
-                repObj = NetGuidCacheObject(actor.type.name,actor.netGUID)
+                repObj = NetGuidCacheObject(actor.type.name, actor.netGUID)
             } else {
-                val (netguid,_subobj) = bunch.readObject()//SubObject, SubObjectNetGUID
+                val (netguid, _subobj) = bunch.readObject()//SubObject, SubObjectNetGUID
                 if (!client) {
                     if (_subobj == null)// The server should never need to create sub objects
                         continue
                     repObj = _subobj
+                    bugln { "$actor hasSubObj $repObj" }
                 } else {
                     val bStablyNamed = bunch.readBit()
                     if (bStablyNamed) {// If this is a stably named sub-object, we shouldn't need to create it
@@ -101,21 +106,22 @@ class ActorChannel(ChIndex: Int, client: Boolean = true): Channel(ChIndex, CHTYP
                             continue
                         repObj = _subobj
                     } else {
-                        val (classGUID,classObj) = bunch.readObject()//SubOjbectClass,SubObjectClassNetGUID
+                        val (classGUID, classObj) = bunch.readObject()//SubOjbectClass,SubObjectClassNetGUID
                         if (!classGUID.isValid() || classObj == null)
                             continue
                         when (actor.type) {
-                            DroopedItemGroup,DroppedItem,AirDrop,DeathDropItemPackage -> {
-                                if (classObj.pathName in itemIcons)
-                                    droppedItemLocation[netguid] = tuple2(Vector2(actor.location.x, actor.location.y), classObj.pathName)
-                            }
-                            else -> {
+                            DroopedItemGroup, DroppedItem, AirDrop, DeathDropItemPackage -> {
+                        if (classObj.pathName in itemIcons)
+                        droppedItemLocation[netguid] = tuple2(Vector2(actor.location.x, actor.location.y), classObj.pathName)
+                         }
+                        else -> {
                             }
                         }
-                        val subobj = NetGuidCacheObject(classObj.pathName,classGUID)
-                        guidCache.registerNetGUID_Client(netguid,subobj)
+                        val subobj = NetGuidCacheObject(classObj.pathName, classGUID)
+                        guidCache.registerNetGUID_Client(netguid, subobj)
                         repObj = guidCache.getObjectFromNetGUID(netguid)
                     }
+
                 }
             }
             val NumPayloadBits = bunch.readIntPacked()
@@ -192,7 +198,8 @@ class ActorChannel(ChIndex: Int, client: Boolean = true): Channel(ChIndex, CHTYP
                     if (client) {
                         actors[netGUID] = this
                         when (type) {
-                            Weapon -> weapons[netGUID] = this
+                            Archetype.Weapon -> weapons[netGUID] = this
+                            Archetype.Team -> teams[netGUID] = _actor as Team
                             AirDrop -> airDropLocation[netGUID]=location
                             DeathDropItemPackage -> corpseLocation[netGUID] = location
                             else -> {
