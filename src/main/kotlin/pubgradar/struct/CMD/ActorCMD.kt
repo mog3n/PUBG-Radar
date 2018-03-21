@@ -1,13 +1,12 @@
 package pubgradar.struct.CMD
 
-import pubg.radar.debugln
+import pubgradar.util.debugln
 import pubgradar.GameListener
 import pubgradar.deserializer.ROLE_MAX
 import pubgradar.deserializer.channel.ActorChannel.Companion.actors
 import pubgradar.struct.*
 import java.util.concurrent.ConcurrentHashMap
 import pubgradar.register
-
 
 object ActorCMD : GameListener {
     init {
@@ -19,7 +18,6 @@ object ActorCMD : GameListener {
         playerStateToActor.clear()
         actorHealth.clear()
     }
-
     val actorWithPlayerState = ConcurrentHashMap<NetworkGUID, NetworkGUID>()
     val playerStateToActor = ConcurrentHashMap<NetworkGUID, NetworkGUID>()
     val actorHealth = ConcurrentHashMap<NetworkGUID, Float>()
@@ -60,7 +58,7 @@ object ActorCMD : GameListener {
       }
       return true
     }
-  }catch (e: Exception){ debugln{("ActorState is throwing somewhere: $e ${e.stackTrace} ${e.message}")} }
+  }catch (e: Exception){ debugln{("ActorState is throwing somewhere: $e ${e.stackTrace} ${e.message} ${e.cause}")} }
   return false
   }
 }

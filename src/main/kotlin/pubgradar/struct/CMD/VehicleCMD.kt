@@ -1,6 +1,6 @@
 package pubgradar.struct.CMD
 
-import pubg.radar.debugln
+import pubgradar.util.debugln
 import pubgradar.struct.*
 
 object VehicleCMD {
@@ -16,7 +16,8 @@ object VehicleCMD {
       }
       return true
     }
-   }catch (e: Exception){ debugln{("VehicleRep is throwing somewhere: $e ${e.stackTrace} ${e.message}")} }
+   }catch (e: Exception){ debugln{("VehicleCMD is throwing somewhere: $e ${e.stackTrace} ${e.message} ${e.cause}")}
+   }
       return false
   }
 }

@@ -1,5 +1,6 @@
 package pubgradar.struct.CMD
 
+import pubgradar.util.debugln
 import pubgradar.GameListener
 import pubgradar.deserializer.channel.ActorChannel.Companion.attacks
 import pubgradar.deserializer.channel.ActorChannel.Companion.selfID
@@ -10,10 +11,6 @@ import pubgradar.struct.*
 import pubgradar.struct.Item.Companion.simplify
 import pubgradar.util.tuple2
 import java.util.concurrent.ConcurrentHashMap
-import pubg.radar.LogLevel.*
-import pubg.radar.debugln
-import pubg.radar.infoln
-
 
 val playerNames=ConcurrentHashMap<NetworkGUID,String>()
 val playerNumKills= ConcurrentHashMap<NetworkGUID,Int>()
@@ -37,11 +34,11 @@ object PlayerStateCMD: GameListener {
       try {
           actor as PlayerState
           with(bunch) {
-              debugln{("WAITING HANDLE; $waitingHandle")}
+             // println("WAITING HANDLE; $waitingHandle")
               when (waitingHandle) {
                   16 -> {
                       val score = propertyFloat()
-         debugln{("score=$score")}
+//          println("score=$score")
                   }
                   17 -> {
                       val ping = propertyByte()
@@ -49,48 +46,48 @@ object PlayerStateCMD: GameListener {
                   18 -> {
                       val name = propertyString()
                       actor.name = name
-                      debugln{("ACTOR NAME: ${actor.netGUID} playerID=$name")}
+          //println("ACTOR NAME: ${actor.netGUID} playerID=$name")
                   }
                   19 -> {
                       val playerID = propertyInt()
-                      debugln{("${actor.netGUID} playerID=$playerID")}
+//          println("${actor.netGUID} playerID=$playerID")
                   }
                   20 -> {
                       val bFromPreviousLevel = propertyBool()
-                      debugln{("${actor.netGUID} bFromPreviousLevel=$bFromPreviousLevel")}
+//          println("${actor.netGUID} bFromPreviousLevel=$bFromPreviousLevel")
                   }
                   21 -> {
                       val isABot = propertyBool()
-                          debugln{("${actor.netGUID} isABot=$isABot")}
+//          println("${actor.netGUID} isABot=$isABot")
                   }
                   22 -> {
                       val bIsInactive = propertyBool()
-                          debugln{("${actor.netGUID} bIsInactive=$bIsInactive")}
+//          println("${actor.netGUID} bIsInactive=$bIsInactive")
                   }
                   23 -> {
                       val bIsSpectator = propertyBool()
-                          debugln{("${actor.netGUID} bIsSpectator=$bIsSpectator")}
+//          println("${actor.netGUID} bIsSpectator=$bIsSpectator")
                   }
                   24 -> {
                       val bOnlySpectator = propertyBool()
-                          debugln{("${actor.netGUID} bOnlySpectator=$bOnlySpectator")}
+//          println("${actor.netGUID} bOnlySpectator=$bOnlySpectator")
                   }
                   25 -> {
                       val StartTime = propertyInt()
-                      debugln{("${actor.netGUID} StartTime=$StartTime")}
+//          println("${actor.netGUID} StartTime=$StartTime")
                   }
                   26 -> {
                       val uniqueId = propertyNetId()
                       uniqueIds[uniqueId] = actor.netGUID
-                          debugln{("${playerNames[actor.netGUID]}${actor.netGUID} uniqueId=$uniqueId")}
+//          println("${playerNames[actor.netGUID]}${actor.netGUID} uniqueId=$uniqueId")
                   }
                   27 -> {//indicate player's death
                       val Ranking = propertyInt()
-                          debugln{("${playerNames[actor.netGUID]}${actor.netGUID} Ranking=$Ranking")}
+//          println("${playerNames[actor.netGUID]}${actor.netGUID} Ranking=$Ranking")
                   }
                   28 -> {
                       val AccountId = propertyString()
-                              debugln{("${actor.netGUID} AccountId=$AccountId")}
+//          println("${actor.netGUID} AccountId=$AccountId")
                   }
                   29 -> {
                       val ReportToken = propertyString()
@@ -136,44 +133,44 @@ object PlayerStateCMD: GameListener {
                   }
                   34 -> {
                       val scoreByDamage = propertyFloat()
-                      debugln{("SCORE BY DAMAGE: $scoreByDamage")}
+                     // println("SCORE BY DAMAGE: $scoreByDamage")
                   }
                   35 -> {
                       val ScoreByKill = propertyFloat()
-                      debugln{("SCORE BY KILL: $ScoreByKill")}
+                     // println("SCORE BY KILL: $ScoreByKill")
                   }
                   36 -> {
                       val ScoreByRanking = propertyFloat()
-                          debugln{("SCORE BY RANKING: $ScoreByRanking")}
+                    //  println("SCORE BY RANKING: $ScoreByRanking")
                   }
                   37 -> {
 
                       val ScoreFactor = propertyFloat()
-                          debugln{("SCORE FACTOR: $ScoreFactor")}
+                   //   println("SCORE FACTOR: $ScoreFactor")
                   }
                   38 -> {
                       val NumKills = propertyInt()
-                          debugln{("NUM KILLS: $NumKills")}
+                      println("NUM KILLS: $NumKills")
                       // actor.numKills = NumKills
                       playerNumKills[actor.netGUID] = NumKills
 
                   }
                   39 -> {
                       val TotalMovedDistanceMeter = propertyFloat()
-                      debugln{("TOTAL MOVED DISTANCE: $TotalMovedDistanceMeter")}
+                      //println(TotalMovedDistanceMeter)
                       selfStateID = actor.netGUID//only self will get this update
                   }
                   40 -> {
                       val TotalGivenDamages = propertyFloat()
-                          debugln{("TOTAL GIVEN DAMAGE: $TotalGivenDamages")}
+                    //  println("TOTAL GIVEN DAMAGE: $TotalGivenDamages")
                   }
                   41 -> {
                       val LongestDistanceKill = propertyFloat()
-                          debugln{("LONGEST KILL:  $LongestDistanceKill")}
+                  //    println("LONGEST KILL:  $LongestDistanceKill")
                   }
                   42 -> {
                       val HeadShots = propertyInt()
-                          debugln{("HEADSHOTS: $HeadShots")}
+                    //  println("HEADSHOTS: $HeadShots")
                   }
                   43 -> {//ReplicatedEquipableItems
                       try {
@@ -203,7 +200,7 @@ object PlayerStateCMD: GameListener {
                           }
                           return true
                       } catch (e: Exception) {
-                          debugln{("PlayerState is throwing on 43: $e ${e.stackTrace} ${e.message}")}
+                          println("PlayerState is throwing on 43: $e ${e.stackTrace} ${e.message}")
                       }
 
                   }
@@ -222,9 +219,7 @@ object PlayerStateCMD: GameListener {
           }
           return true
       }
-      catch (e: Exception){
-          debugln{("PlayerState is throwing somewhere: $e ${e.stackTrace} ${e.message}")}
-      }
+  catch (e: Exception){ debugln{("PlayerStateCMD is throwing somewhere: $e ${e.stackTrace} ${e.message} ${e.cause}")} }
       return false
   }
 }

@@ -23,8 +23,8 @@ import com.badlogic.gdx.math.*
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL13.GL_CLAMP_TO_BORDER
 import pubgradar.*
-import pubgradar.util.Sniffer.Companion.localAddr
-import pubgradar.util.Sniffer.Companion.sniffOption
+import pubgradar.Sniffer.Companion.localAddr
+import pubgradar.Sniffer.Companion.sniffOption
 import pubgradar.deserializer.channel.ActorChannel.Companion.actorHasWeapons
 import pubgradar.deserializer.channel.ActorChannel.Companion.actors
 import pubgradar.deserializer.channel.ActorChannel.Companion.airDropLocation
@@ -47,6 +47,7 @@ import pubgradar.struct.PlayerState
 import pubgradar.struct.Team
 import pubgradar.struct.Weapon
 import pubgradar.struct.CMD.*
+import pubgradar.struct.CMD.ActorCMD.actorWithPlayerState
 import pubgradar.struct.CMD.GameStateCMD.ElapsedWarningDuration
 import pubgradar.struct.CMD.GameStateCMD.MatchElapsedMinutes
 import pubgradar.struct.CMD.GameStateCMD.NumAlivePlayers
@@ -70,7 +71,6 @@ import kotlin.collections.HashMap
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.math.*
-import pubg.radar.LogLevel.*
 
 typealias renderInfo = tuple4<Actor, Float, Float, Float>
 
@@ -326,8 +326,8 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
             NUMPAD_0 -> filterAmmo = filterAmmo * -1
 
         // Zoom In/Out || Overrides Max/Min Zoom
-            MINUS -> mapCamera.zoom = mapCamera.zoom + 0.00525f
-            PLUS -> mapCamera.zoom = mapCamera.zoom - 0.00525f
+            MINUS -> camera.zoom = camera.zoom + 0.00525f
+            PLUS -> camera.zoom = camera.zoom - 0.00525f
 
         }
         return false
@@ -909,14 +909,21 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
         }
         //draw self
           drawMyself(tuple4(actors[selfID] ?: return,selfCoords.x,selfCoords.y,selfDirection))
+
         players?.forEach {
 
             val (actor, x, y, dir) = it
             val (sx, sy) = Vector2(x, y).mapToWindow()
-            val teamId = isTeamMate(actor)
+            val playerStateGUID = actorWithPlayerState[actor.netGUID] ?: return@forEach
+            val PlayerState = actors[playerStateGUID] as? PlayerState ?: return@forEach
+            val selfStateGUID = actorWithPlayerState[selfID] ?: return@forEach
+            val selfState = actors[selfStateGUID] as? PlayerState ?: return@forEach
 
-            if (teamId > 0) {
 
+           // val teamId = isTeamMate(actor)
+            //println(teamId)
+          // if (teamId > 0) {
+            if (PlayerState.teamNumber == selfState.teamNumber) {
                 // Can't wait for the "Omg Players don't draw issues
                 spriteBatch.draw(
                         teamarrow,
@@ -1447,6 +1454,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
 
 
             when (nameToggles) {
+                
                 0 ->
                 {}
 
@@ -1489,6 +1497,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                             sx + 20, windowHeight - sy + 20)
                 }
                 3 -> {
+
                     nameFont.draw(spriteBatch, "|N: $name\n|D: ${distance}m", sx + 20, windowHeight - sy + 20)
                     // rectLine(x - width / 2, hpY, x - width / 2 + healthWidth, hpY, height)
                 }
