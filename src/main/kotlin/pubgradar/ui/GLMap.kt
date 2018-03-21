@@ -171,30 +171,36 @@ class GLMap(private val jsettings: Settings.jsonsettings) : InputAdapter(), Appl
     private val aimStartTime = HashMap<NetworkGUID, Long>()
     private val attackLineStartTime = LinkedList<Triple<NetworkGUID, NetworkGUID, Long>>()
     private val pinLocation = Vector2()
-    // Menu Settings
-    //////////////////////////////
-    private var filterWeapon = -1
-    private var filterAttach = -1
-    private var filterLvl2 = -1
-    private var filterScope = -1
-    private var filterHeals = -1
-    private var filterAmmo = 1
-    private var filterThrow = 1
-    private var drawcompass = -1
-    private var drawmenu = 1
-    private var toggleView = 1
-    private var drawDaMap = 1
+
+
+    // Please change your pre-build settings in Settings.kt
+    // You can change them in Settings.json after you run the game once too.
+    private var filterWeapon = jsettings.filterWeapon
+    private var filterAttach = jsettings.filterAttach
+    private var filterLvl2 = jsettings.filterLvl2
+    private var filterScope = jsettings.filterScope
+    private var filterHeals = jsettings.filterHeals
+    private var filterAmmo = jsettings.filterAmmo
+    private var filterThrow = jsettings.filterThrow
+    private var drawcompass = jsettings.drawcompass
+    private var drawmenu = jsettings.drawmenu
+    private var toggleView = jsettings.toggleView
+    private var drawDaMap = jsettings.drawDaMap
+
+    // Please change your pre-build settings in Settings.kt
+    // You can change them in Settings.json after you run the game once too.
+
     // private var toggleVehicles = -1
     //  private var toggleVNames = -1
-    private var drawMinimap = -1
-    private var nameToggles = 4
-    private var VehicleInfoToggles = 1
-    private var ZoomToggles = 1
-    ///////////////////////////
+
+    private var nameToggles = jsettings.nameToggles
+    private var VehicleInfoToggles = jsettings.VehicleInfoToggles
+    private var ZoomToggles = jsettings.ZoomToggles
     private var scopesToFilter = arrayListOf("")
     private var weaponsToFilter = arrayListOf("")
     private var attachToFilter = arrayListOf("")
     private var level2Filter = arrayListOf("")
+    private var level1Filter = arrayListOf("")
     private var healsToFilter = arrayListOf("")
     private var ammoToFilter = arrayListOf("")
     private var throwToFilter = arrayListOf("")
@@ -203,6 +209,37 @@ class GLMap(private val jsettings: Settings.jsonsettings) : InputAdapter(), Appl
     private var prevScreenY = -1f
     private var screenOffsetX = 0f
     private var screenOffsetY = 0f
+
+
+     val miniMapWindowWidth=jsettings.miniMapWindowWidth
+     val miniMapRadius=jsettings.miniMapRadius
+     val playerRadius=jsettings.playerRadius
+     val healthBarWidth=jsettings.healthBarWidth
+     val healthBarHeight=jsettings.healthBarHeight
+     val directionRadius=jsettings.directionRadius
+     val fov=jsettings.fov
+     val aimLineWidth=jsettings.aimLineWidth
+     val aimLineRange=jsettings.aimLineRange
+     val aimCircleRadius=jsettings.aimCircleRadius
+     val aimTimeThreshold=jsettings.aimTimeThreshold
+     val attackLineDuration=jsettings.attackLineDuration
+     val attackMeLineDuration=jsettings.attackMeLineDuration
+     val firingLineDuration = jsettings.firingLineDuration
+     val firingLineLength = jsettings.firingLineLength
+     val itemZoomThreshold= jsettings.itemZoomThreshold
+     val airDropTextScale = jsettings.airDropTextScale
+     val itemScale = jsettings.itemScale
+     val staticItemScale = jsettings.staticItemScale
+     val mapMarkerScale = jsettings.mapMarkerScale
+     val airDropScale = jsettings.airDropScale
+     val vehicleScale = jsettings.vehicleScale
+     val planeScale = jsettings.planeScale
+     val grenadeScale = jsettings.grenadeScale
+     val corpseScale = jsettings.corpseScale
+     val redzoneBombScale = jsettings.redzoneBombScale
+
+    // Please change your pre-build settings in Settings.kt
+    // You can change them in Settings.json after you run the game once too.
 
 
     private fun windowToMap(x: Float, y: Float) =
@@ -306,6 +343,18 @@ class GLMap(private val jsettings: Settings.jsonsettings) : InputAdapter(), Appl
                     camera.zoom = 1 / 8f
                 }
             }
+
+         // Level 1 and 2 item filters
+            Input.Keys.valueOf(jsettings.filterLvl2_Key) -> {
+                if (filterLvl2 < 3) {
+                    filterLvl2 += 1
+                }
+                if (filterLvl2 == 3) {
+                    filterLvl2 = 0
+                }
+            }
+
+        // Please Change Your Settings in Util/Settings.kt
         // Other Filter Keybinds
             Input.Keys.valueOf(jsettings.drawcompass_Key) -> drawcompass = drawcompass * -1
 
@@ -321,7 +370,6 @@ class GLMap(private val jsettings: Settings.jsonsettings) : InputAdapter(), Appl
 
         // Icon Filter Keybinds
             Input.Keys.valueOf(jsettings.filterWeapon_Key) -> filterWeapon = filterWeapon * -1
-            Input.Keys.valueOf(jsettings.filterLvl2_Key) -> filterLvl2 = filterLvl2 * -1
             Input.Keys.valueOf(jsettings.filterHeals_Key) -> filterHeals = filterHeals * -1
             Input.Keys.valueOf(jsettings.filterThrow_Key) -> filterThrow = filterThrow * -1
             Input.Keys.valueOf(jsettings.filterAttach_Key) -> filterAttach = filterAttach * -1
@@ -332,6 +380,7 @@ class GLMap(private val jsettings: Settings.jsonsettings) : InputAdapter(), Appl
             Input.Keys.valueOf(jsettings.camera_zoom_Minus_Key) -> mapCamera.zoom = mapCamera.zoom + 0.00525f
             Input.Keys.valueOf(jsettings.camera_zoom_Plus_Key) -> mapCamera.zoom = mapCamera.zoom - 0.00525f
 
+        // Please Change Your Settings in Util/Settings.kt
         }
         return false
     }
@@ -670,7 +719,7 @@ class GLMap(private val jsettings: Settings.jsonsettings) : InputAdapter(), Appl
             else
                 espFontShadow.draw(spriteBatch, "ATTACH", 40f, windowHeight - 42f)
 
-            if (filterLvl2 != 1)
+            if (filterLvl2 != 0)
                 espFont.draw(spriteBatch, "EQUIP", 100f, windowHeight - 25f)
             else
                 espFontShadow.draw(spriteBatch, "EQUIP", 100f, windowHeight - 25f)
@@ -742,9 +791,13 @@ class GLMap(private val jsettings: Settings.jsonsettings) : InputAdapter(), Appl
                 else
                     menuFontOFF.draw(spriteBatch, "Disabled", 187f, windowHeight / 2 + 103f)
 
-                if (filterLvl2 != 1)
-                    menuFontOn.draw(spriteBatch, "Enabled", 187f, windowHeight / 2 + 85f)
-                else
+                if (filterLvl2 == 1)
+                    menuFontOn.draw(spriteBatch, "Level 1", 187f, windowHeight / 2 + 85f)
+
+                if (filterLvl2 == 2)
+                    menuFontOn.draw(spriteBatch, "Level 2", 187f, windowHeight / 2 + 85f)
+
+                if (filterLvl2 == 0)
                     menuFontOFF.draw(spriteBatch, "Disabled", 187f, windowHeight / 2 + 85f)
 
                 if (filterHeals != 1)
@@ -1385,31 +1438,30 @@ class GLMap(private val jsettings: Settings.jsonsettings) : InputAdapter(), Appl
                     "Item_Weapon_Molotov_C")
         }
 
-        level2Filter = if (filterLvl2 != 1) {
-            arrayListOf("")
-        } else {
+        level2Filter = if (filterLvl2 < 2) {
             arrayListOf(
+                 // "Item_Armor_C_01_Lv3_C",
+                 // "Item_Head_G_01_Lv3_C",
+                //  "Item_Back_C_02_Lv3_C",
+                //  "Item_Back_C_01_Lv3_C",
                     "Item_Armor_D_01_Lv2_C",
-                    "Item_Armor_C_01_Lv3_C",
-                    "Item_Head_G_01_Lv3_C",
                     "Item_Head_F_02_Lv2_C",
                     "Item_Head_F_01_Lv2_C",
-                    "Item_Back_C_02_Lv3_C",
-                    "Item_Back_C_01_Lv3_C",
                     "Item_Back_F_01_Lv2_C",
-                    "Item_Back_F_02_Lv2_C",
+                    "Item_Back_F_02_Lv2_C")
+        }else { arrayListOf("") }
+
+        level1Filter = if (filterLvl2 < 1) {
+            arrayListOf(
                     "Item_Back_E_01_Lv1_C",
                     "Item_Armor_E_01_Lv1_C",
                     "Item_Head_E_01_Lv1_C",
                     "Item_Back_E_02_Lv1_C",
                     "Item_Head_E_02_Lv1_C")
+        } else {
+            arrayListOf("")
         }
 
-        val Crateitems = arrayListOf("Item_Weapon_AUG",
-                "Item_Weapon_M24",
-                "Item_Weapon_M249",
-                "Item_Weapon_Groza",
-                "Item_Weapon_AWM")
 
         val sorted = ArrayList(droppedItemLocation.values)
         sorted.sortBy {
@@ -1423,7 +1475,7 @@ class GLMap(private val jsettings: Settings.jsonsettings) : InputAdapter(), Appl
             val scale = if (it._3) itemScale else staticItemScale
 
             if ((items !in weaponsToFilter && items !in scopesToFilter && items !in attachToFilter && items !in level2Filter
-                            && items !in ammoToFilter && items !in healsToFilter) && items !in throwToFilter) {
+                            && items !in level1Filter && items !in ammoToFilter && items !in healsToFilter) && items !in throwToFilter) {
                 if (items in crateIcons) {
 
                     val adt = crateIcons[items]!!
