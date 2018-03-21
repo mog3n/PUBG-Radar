@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.glutils.*
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.*
 import com.badlogic.gdx.math.*
+import main.util.Settings
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL13.GL_CLAMP_TO_BORDER
 import pubgradar.*
@@ -75,8 +76,9 @@ import kotlin.math.*
 typealias renderInfo = tuple4<Actor, Float, Float, Float>
 
 val itemIcons = HashMap<String, AtlasRegion>()
+val crateIcons = HashMap<String, AtlasRegion>()
 
-class GLMap : InputAdapter(), ApplicationListener, GameListener {
+class GLMap(private val jsettings: Settings.jsonsettings) : InputAdapter(), ApplicationListener, GameListener {
     companion object {
         operator fun Vector3.component1(): Float = x
         operator fun Vector3.component2(): Float = y
@@ -130,6 +132,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
     lateinit var alarmSound: Sound
     lateinit var pawnAtlas: TextureAtlas
     lateinit var itemAtlas: TextureAtlas
+    lateinit var crateAtlas: TextureAtlas
     lateinit var markerAtlas: TextureAtlas
     lateinit var markers: Array<TextureRegion>
     private lateinit var parachute: Texture
@@ -264,7 +267,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
 
 
         // Change Player Info
-            F1 -> {
+            Input.Keys.valueOf(jsettings.nameToogle_Key) -> {
                 if (nameToggles < 5) {
                     nameToggles += 1
                 }
@@ -273,7 +276,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                 }
             }
 
-            F5 -> {
+            Input.Keys.valueOf(jsettings.VehicleInfoToggles_Key) -> {
                 if (VehicleInfoToggles <= 4) {
                     VehicleInfoToggles += 1
                 }
@@ -282,7 +285,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                 }
             }
         // Zoom (Loot, Combat, Scout)
-            NUMPAD_8 -> {
+            Input.Keys.valueOf(jsettings.ZoomToggles_Key) -> {
                 if (ZoomToggles <= 4) {
                     ZoomToggles += 1
                 }
@@ -304,30 +307,30 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                 }
             }
         // Other Filter Keybinds
-            F2 -> drawcompass = drawcompass * -1
+            Input.Keys.valueOf(jsettings.drawcompass_Key) -> drawcompass = drawcompass * -1
 
 
         // Toggle View Line
-            F4 -> toggleView = toggleView * -1
+            Input.Keys.valueOf(jsettings.toggleView_Key) -> toggleView = toggleView * -1
 
         // Toggle Da Minimap
-            F3 -> drawDaMap = drawDaMap * -1
+            Input.Keys.valueOf(jsettings.drawDaMap_Key) -> drawDaMap = drawDaMap * -1
 
         // Toggle Menu
-            F12 -> drawmenu = drawmenu * -1
+            Input.Keys.valueOf(jsettings.drawmenu_Key) -> drawmenu = drawmenu * -1
 
         // Icon Filter Keybinds
-            NUMPAD_1 -> filterWeapon = filterWeapon * -1
-            NUMPAD_2 -> filterLvl2 = filterLvl2 * -1
-            NUMPAD_3 -> filterHeals = filterHeals * -1
-            NUMPAD_4 -> filterThrow = filterThrow * -1
-            NUMPAD_5 -> filterAttach = filterAttach * -1
-            NUMPAD_6 -> filterScope = filterScope * -1
-            NUMPAD_0 -> filterAmmo = filterAmmo * -1
+            Input.Keys.valueOf(jsettings.filterWeapon_Key) -> filterWeapon = filterWeapon * -1
+            Input.Keys.valueOf(jsettings.filterLvl2_Key) -> filterLvl2 = filterLvl2 * -1
+            Input.Keys.valueOf(jsettings.filterHeals_Key) -> filterHeals = filterHeals * -1
+            Input.Keys.valueOf(jsettings.filterThrow_Key) -> filterThrow = filterThrow * -1
+            Input.Keys.valueOf(jsettings.filterAttach_Key) -> filterAttach = filterAttach * -1
+            Input.Keys.valueOf(jsettings.filterScope_Key) -> filterScope = filterScope * -1
+            Input.Keys.valueOf(jsettings.filterAmmo_Key) -> filterAmmo = filterAmmo * -1
 
         // Zoom In/Out || Overrides Max/Min Zoom
-            MINUS -> camera.zoom = camera.zoom + 0.00525f
-            PLUS -> camera.zoom = camera.zoom - 0.00525f
+            Input.Keys.valueOf(jsettings.camera_zoom_Minus_Key) -> mapCamera.zoom = mapCamera.zoom + 0.00525f
+            Input.Keys.valueOf(jsettings.camera_zoom_Plus_Key) -> mapCamera.zoom = mapCamera.zoom - 0.00525f
 
         }
         return false
@@ -403,9 +406,15 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
         parachute = Texture(Gdx.files.internal("images/parachute.png"))
 
         parachute = Texture(Gdx.files.internal("images/parachute.png"))
+
         itemAtlas = TextureAtlas(Gdx.files.internal("icons/itemIcons.txt"))
         for (region in itemAtlas.regions)
             itemIcons[region.name] = region.apply { flip(false, true) }
+
+
+        crateAtlas = TextureAtlas(Gdx.files.internal("icons/crateIcons.txt"))
+        for (region in crateAtlas.regions)
+            crateIcons[region.name] = region.apply { flip(false, true) }
 
         pawnAtlas = TextureAtlas(Gdx.files.internal("icons/APawnIcons.txt"))
         for (region in pawnAtlas.regions)
@@ -445,66 +454,65 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
         val generatorHub = FreeTypeFontGenerator(Gdx.files.internal("font/AGENCYFB.TTF"))
         val paramHub = FreeTypeFontParameter()
         paramHub.characters = DEFAULT_CHARS
-        paramHub.size = 30
-        paramHub.color = WHITE
+        paramHub.size = jsettings.hubFont_size
+        paramHub.color = jsettings.hubFont_color
         hubFont = generatorHub.generateFont(paramHub)
-        paramHub.color = Color(1f, 1f, 1f, 0.4f)
+        paramHub.color = jsettings.hubFontShadow_color
         hubFontShadow = generatorHub.generateFont(paramHub)
-        paramHub.size = 16
-        paramHub.color = WHITE
+        paramHub.size = jsettings.espFont_size
+        paramHub.color = jsettings.espFont_color
         espFont = generatorHub.generateFont(paramHub)
-        paramHub.color = Color(1f, 1f, 1f, 0.2f)
+        paramHub.color = jsettings.espFontShadow_color
         espFontShadow = generatorHub.generateFont(paramHub)
         val generatorNumber = FreeTypeFontGenerator(Gdx.files.internal("font/NUMBER.TTF"))
         val paramNumber = FreeTypeFontParameter()
         paramNumber.characters = DEFAULT_CHARS
-        paramNumber.size = 24
-        paramNumber.color = WHITE
+        paramNumber.size = jsettings.largeFont_size
+        paramNumber.color = jsettings.largeFont_color
         largeFont = generatorNumber.generateFont(paramNumber)
         val generator = FreeTypeFontGenerator(Gdx.files.internal("font/GOTHICB.TTF"))
         val param = FreeTypeFontParameter()
         param.characters = DEFAULT_CHARS
-        param.size = 38
-        param.color = WHITE
+        param.size = jsettings.largeFont_size2
+        param.color = jsettings.largeFont_color2
         largeFont = generator.generateFont(param)
-        param.size = 15
-        param.color = WHITE
+        param.size = jsettings.littleFont_size
+        param.color = jsettings.littleFont_color
         littleFont = generator.generateFont(param)
-        param.color = BLACK
-        param.size = 10
+        param.color = jsettings.nameFont_color
+        param.size = jsettings.nameFont_size
         nameFont = generator.generateFont(param)
-        param.color = WHITE
-        param.size = 6
+        param.color = jsettings.itemFont_color
+        param.size = jsettings.itemFont_size
         itemFont = generator.generateFont(param)
-        val compaseColor = Color(0f, 0.95f, 1f, 1f)  //Turquoise1
-        param.color = compaseColor
-        param.size = 10
+        param.color = jsettings.compaseFont_color
+        param.size = jsettings.compaseFont_size
         compaseFont = generator.generateFont(param)
-        param.color = Color(0f, 0f, 0f, 0.5f)
+        param.color = jsettings.compaseFontShadow_color
         compaseFontShadow = generator.generateFont(param)
         param.characters = DEFAULT_CHARS
-        param.size = 20
-        param.color = WHITE
+        param.size = jsettings.littleFont_size2
+        param.color = jsettings.littleFont_color2
         littleFont = generator.generateFont(param)
-        param.color = Color(0f, 0f, 0f, 0.5f)
+        param.color = jsettings.littleFontShadow_color
         littleFontShadow = generator.generateFont(param)
-        param.color = WHITE
-        param.size = 12
+        param.color = jsettings.menuFont_color
+        param.size = jsettings.menuFont_size
         menuFont = generator.generateFont(param)
-        param.color = GREEN
-        param.size = 12
+        param.color = jsettings.menuFontOn_color
+        param.size = jsettings.menuFontOn_size
         menuFontOn = generator.generateFont(param)
-        param.color = RED
-        param.size = 12
+        param.color = jsettings.menuFontOFF_color
+        param.size = jsettings.menuFontOFF_size
         menuFontOFF = generator.generateFont(param)
-        param.color = ORANGE
-        param.size = 10
+        param.color = jsettings.hporange_color
+        param.size = jsettings.hporange_size
         hporange = generator.generateFont(param)
-        param.color = GREEN
-        param.size = 10
+        param.color = jsettings.hpgreen_color
+        param.size = jsettings.hpgreen_size
         hpgreen = generator.generateFont(param)
-        param.color = RED
-        param.size = 10
+        param.color = jsettings.hpred_color
+        param.size = jsettings.hpred_size
         hpred = generator.generateFont(param)
 
 
@@ -514,18 +522,6 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
     }
 
     private val dirUnitVector = Vector2(1f, 0f)
-    fun drawMapMarkers() {
-        paint (camera.combined) {
-            for (team in teams.values) {
-                if (team.showMapMarker) {
-                    //println(team.mapMarkerPosition)
-                    val icon = markers[team.memberNumber]
-                    val (x, y) = team.mapMarkerPosition
-                    draw(icon, x, y, 0f, mapMarkerScale, false)
-                }
-            }
-        }
-    }
 
     override fun render() {
         Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a)
@@ -703,18 +699,18 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                 espFontShadow.draw(spriteBatch, "THROW", 200f, windowHeight - 25f)
 
             if (drawmenu == 1)
-                espFont.draw(spriteBatch, "[INS] Menu ON", 270f, windowHeight - 25f)
+                espFont.draw(spriteBatch, "[" + jsettings.drawmenu_Key + "] Menu ON", 270f, windowHeight - 25f)
             else
-                espFontShadow.draw(spriteBatch, "[INS] Menu OFF", 270f, windowHeight - 25f)
+                espFontShadow.draw(spriteBatch, "[" + jsettings.drawmenu_Key + "] Menu OFF", 270f, windowHeight - 25f)
 
             val num = nameToggles
-            espFontShadow.draw(spriteBatch, "[F1] Player Info: $num", 270f, windowHeight - 42f)
+            espFontShadow.draw(spriteBatch, "[" + jsettings.nameToogle_Key + "] Player Info: $num", 270f, windowHeight - 42f)
 
             val znum = ZoomToggles
-            espFontShadow.draw(spriteBatch, "[Num8] Zoom Toggle: $znum", 40f, windowHeight - 68f)
+            espFontShadow.draw(spriteBatch, "[" + jsettings.ZoomToggles_Key + "] Zoom Toggle: $znum", 40f, windowHeight - 68f)
 
             val vnum = VehicleInfoToggles
-            espFontShadow.draw(spriteBatch, "[F5] Vehicle Toggles: $vnum", 40f, windowHeight - 85f)
+            espFontShadow.draw(spriteBatch, "[" + jsettings.VehicleInfoToggles_Key + "] Vehicle Toggles: $vnum", 40f, windowHeight - 85f)
 
 
             val pinDistance = (pinLocation.cpy().sub(selfCoords.x, selfCoords.y).len() / 100).toInt()
@@ -730,6 +726,15 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
 
             if (drawmenu == 1) {
                 spriteBatch.draw(menu, 20f, windowHeight / 2 - 200f)
+
+                //
+                menuFont.draw(spriteBatch, jsettings.filterWeapon_Key, 120f, windowHeight / 2 + 103f)
+                menuFont.draw(spriteBatch, jsettings.filterLvl2_Key, 120f, windowHeight / 2 + 85f)
+                menuFont.draw(spriteBatch, jsettings.filterHeals_Key, 120f, windowHeight / 2 + 67f)
+                menuFont.draw(spriteBatch, jsettings.filterThrow_Key, 120f, windowHeight / 2 + 49f)
+                menuFont.draw(spriteBatch, jsettings.filterAttach_Key, 120f, windowHeight / 2 + 31f)
+                menuFont.draw(spriteBatch, jsettings.filterScope_Key, 120f, windowHeight / 2 + 13f)
+                menuFont.draw(spriteBatch, jsettings.filterAmmo_Key, 120f, windowHeight / 2 - 5f)
 
                 // Filters
                 if (filterWeapon != 1)
@@ -767,6 +772,11 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
                 else
                     menuFontOFF.draw(spriteBatch, "Disabled", 187f, windowHeight / 2 + -5f)
 
+
+
+                menuFont.draw(spriteBatch, jsettings.camera_zoom_Minus_Key, 120f, windowHeight / 2 - 45f)
+                menuFont.draw(spriteBatch, jsettings.camera_zoom_Plus_Key, 120f, windowHeight / 2 - 63f)
+
                 val camvalue = camera.zoom
                 when {
                     camvalue <= 0.0100f -> menuFontOFF.draw(spriteBatch, "Max Zoom", 187f, windowHeight / 2 + -27f)
@@ -778,6 +788,13 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
 
                     else -> menuFont.draw(spriteBatch, ("%.4f").format(camnum), 187f, windowHeight / 2 + -27f)
                 }
+
+                menuFont.draw(spriteBatch, jsettings.nameToogle_Key, 120f, windowHeight / 2 - 89f)
+                menuFont.draw(spriteBatch, jsettings.drawcompass_Key, 120f, windowHeight / 2 - 107f)
+                menuFont.draw(spriteBatch, jsettings.drawDaMap_Key, 120f, windowHeight / 2 - 125f)
+                menuFont.draw(spriteBatch, jsettings.toggleView_Key, 120f, windowHeight / 2 - 143f)
+                menuFont.draw(spriteBatch, jsettings.VehicleInfoToggles_Key, 120f, windowHeight / 2 - 161f)
+                menuFont.draw(spriteBatch, jsettings.drawmenu_Key, 120f, windowHeight / 2 - 179f)
 
                 // Name Toggles
                 val togs = nameToggles
@@ -1402,19 +1419,20 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
             if (it._3 && mapCamera.zoom > itemZoomThreshold) return@forEach
             val (x, y) = it._1
             val items = it._2
-            val icon = itemIcons[items]
-            icon!!
+            val icon = itemIcons[items]!!
             val scale = if (it._3) itemScale else staticItemScale
-            if (items in Crateitems) {
-                hpgreen.draw(spriteBatch, "$items", x - scale, y - scale)
 
-                draw(icon, x, y, 0f, scale, it._3)
-            }
             if ((items !in weaponsToFilter && items !in scopesToFilter && items !in attachToFilter && items !in level2Filter
                             && items !in ammoToFilter && items !in healsToFilter) && items !in throwToFilter) {
+                if (items in crateIcons) {
 
+                    val adt = crateIcons[items]!!
+                    draw(adt, x + 50, y, 0f, airDropTextScale, it._3)
+
+                }
+                else{
                 draw(icon, x, y, 0f, scale, it._3)
-            }
+            }}
         }
     }
 
@@ -1454,7 +1472,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
 
 
             when (nameToggles) {
-                
+
                 0 ->
                 {}
 
@@ -1692,6 +1710,7 @@ class GLMap : InputAdapter(), ApplicationListener, GameListener {
         mapMiramar.dispose()
         carePackage.texture.dispose()
         itemAtlas.dispose()
+        crateAtlas.dispose()
         pawnAtlas.dispose()
         spriteBatch.dispose()
         shapeRenderer.dispose()
