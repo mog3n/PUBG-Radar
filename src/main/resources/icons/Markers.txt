@@ -31,3 +31,31 @@ marker4
   orig: 50, 71
   offset: 2, 0
   index: -1
+marker5
+  rotate: false
+  xy: 189, 1
+  size: 45, 71
+  orig: 50, 71
+  offset: 2, 0
+  index: -1
+marker6
+  rotate: false
+  xy: 236, 1
+  size: 45, 71
+  orig: 50, 71
+  offset: 2, 0
+  index: -1
+marker7
+  rotate: false
+  xy: 283, 1
+  size: 45, 71
+  orig: 50, 71
+  offset: 2, 0
+  index: -1
+marker8
+  rotate: false
+  xy: 330, 1
+  size: 45, 71
+  orig: 50, 71
+  offset: 2, 0
+  index: -1

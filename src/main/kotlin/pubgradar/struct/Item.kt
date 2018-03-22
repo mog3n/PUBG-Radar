@@ -101,8 +101,13 @@ class Item
           "Item_Ammo_9mm_C" to count() ,
           "Item_Heal_Bandage_C" to count() ,
           "Item_Ammo_45ACP_C" to count() ,
-          "Item_Ammo_12Guage_C" to count()
-                       )
+          "Item_Ammo_12Guage_C" to count(),
+
+          "Item_Weapon_FlareGun_C" to count(),
+          "Item_Ammo_Flare_C"  to count()
+
+
+              )
 
       val category = mapOf(
           "Item" to mapOf(

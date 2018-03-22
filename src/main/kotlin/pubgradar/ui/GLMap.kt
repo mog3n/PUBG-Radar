@@ -552,8 +552,10 @@ class GLMap(private val jsettings : Settings.jsonsettings) : InputAdapter() , Ap
 
       markers = arrayOf(
           markerAtlas.findRegion("marker1") , markerAtlas.findRegion("marker2") ,
-          markerAtlas.findRegion("marker3") , markerAtlas.findRegion("marker4")
-                       )
+          markerAtlas.findRegion("marker3") , markerAtlas.findRegion("marker4") ,
+          markerAtlas.findRegion("marker5") , markerAtlas.findRegion("marker6") ,
+          markerAtlas.findRegion("marker7") , markerAtlas.findRegion("marker8")
+              )
 
       val generatorHub = FreeTypeFontGenerator(Gdx.files.internal("font/AGENCYFB.TTF"))
       val paramHub = FreeTypeFontParameter()
@@ -1548,6 +1550,7 @@ class GLMap(private val jsettings : Settings.jsonsettings) : InputAdapter() , Ap
              "Item_Weapon_G18_C" ,
              "Item_Weapon_SawenOff_C" ,
              "Item_Weapon_Rhino_C" ,
+             "Item_Weapon_FlareGun_C",
              "Item_Weapon_M1911_C" ,
              "Item_Weapon_NagantM1895_C" ,
              "Item_Weapon_M9_C"
@@ -1583,6 +1586,7 @@ class GLMap(private val jsettings : Settings.jsonsettings) : InputAdapter() , Ap
              "Item_Weapon_Pan_C" ,
              "Item_Ammo_9mm_C" ,
              "Item_Ammo_45ACP_C" ,
+             "Item_Ammo_Flare_C",
              "Item_Ammo_12Guage_C"
                     )
       }

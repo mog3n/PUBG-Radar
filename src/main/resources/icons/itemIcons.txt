@@ -430,6 +430,20 @@ Item_Weapon_Grenade_C
   orig: 64, 64
   offset: 0, 0
   index: -1
+Item_Weapon_FlareGun_C
+  rotate: false
+  xy: 256, 192
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Item_Ammo_Flare_C
+  rotate: false
+  xy: 320, 192
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 Item_Weapon_Groza_C
   rotate: false
   xy: 256, 512
