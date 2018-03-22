@@ -3,7 +3,7 @@
 ![Imgur](https://i.imgur.com/PDjwkyR.jpg)
 
 
-join us on [Discord for updates](https://discord.me/radarproject)
+join us on [Discord for updates] BlueHole banned our discord xD
 
 SDK Dumped by (legitnutty33) Thank You!
 
