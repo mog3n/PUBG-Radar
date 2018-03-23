@@ -18,7 +18,6 @@ object DeathDropItemPackageCMD
                6    ->
                {
                   repMovement(actor)
-                  airDropLocation[actor.netGUID] = actor.location
                }
                16   -> updateItemBag(actor)
                else -> return ActorCMD.process(actor , bunch , repObj , waitingHandle , data)

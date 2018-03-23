@@ -1,6 +1,6 @@
 package pubgradar
 
-import main.util.Settings
+import pubgradar.util.settings.Settings
 import org.pcap4j.core.Pcaps
 import org.pcap4j.packet.IpPacket
 import pubgradar.deserializer.*

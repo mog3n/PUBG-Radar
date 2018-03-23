@@ -243,9 +243,9 @@ class ActorChannel(ChIndex : Int , client : Boolean = true) : Channel(ChIndex , 
                   {
                      Archetype.Weapon     -> weapons[netGUID] = this
                      AirDrop              -> airDropLocation[netGUID] = location
-                     DeathDropItemPackage -> corpseLocation[netGUID] = location
                      RedZoneBomb          -> redZoneBombLocation[netGUID] = tuple2(location , System.currentTimeMillis())
                      Archetype.Team       -> teams[netGUID] = _actor as Team
+                     DeathDropItemPackage -> corpseLocation[netGUID] = location
                      else                 ->
                      {
                      }

@@ -2,11 +2,13 @@ package pubgradar.deserializer
 
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.math.Vector3
+import org.pcap4j.core.NotOpenException
 import pubgradar.struct.ExportFlags
 import pubgradar.struct.Names
 import pubgradar.struct.NetGUIDCache.Companion.guidCache
 import pubgradar.struct.NetGuidCacheObject
 import pubgradar.struct.NetworkGUID
+import pubgradar.util.debugln
 import java.nio.charset.Charset
 import kotlin.experimental.and
 import kotlin.experimental.or
@@ -72,6 +74,7 @@ open class Buffer(
 
    fun readBit() : Boolean
    {
+      try{
       if (cur.localTotalBits > 0)
       {
          totalBits --
@@ -86,8 +89,21 @@ open class Buffer(
             return cur.readLocalBit()
          }
       }
+         // manual throw
       throw IndexOutOfBoundsException()
+
+         // must catch (or exit 1)
+   } catch (e: Exception) {
+} catch (e: IndexOutOfBoundsException) { debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+} catch (e: Exception) { debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+} catch (e: NotOpenException){ debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
    }
+      return false
+   }
+
+
+
+
 
    fun readByte() : Int
    {
@@ -121,25 +137,44 @@ open class Buffer(
    {
       var mask = 1
       var value = 0
-      while (value + mask < MaxValue&&mask != 0)
+      try
       {
-         if (readBit()) value = value or mask
-         mask = mask shl 1
-      }
-      return value
-   }
+
+         while (value + mask < MaxValue&&mask != 0)
+         {
+            if (readBit()) value = value or mask
+            mask = mask shl 1
+         }
+         return value
+      }  catch (e: Exception) {
+} catch (e: IndexOutOfBoundsException) { debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+} catch (e: Exception) { debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+} catch (e: NotOpenException){ debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+}
+   return value
+}
+
+
 
    fun readIntPacked() : Int
    {
       var value = 0
       var count = 0
       var more = 1
-      while (more != 0)
+      try
       {
-         var nextByte = readByte() // Read next byte
-         more = nextByte and 1 // Check 1 bit to see if there're more after this
-         nextByte = nextByte ushr 1 // Shift to get actual 7 bit value
-         value += nextByte shl (7 * count ++) // Add to total value
+         while (more != 0)
+         {
+            var nextByte = readByte() // Read next byte
+            more = nextByte and 1 // Check 1 bit to see if there're more after this
+            nextByte = nextByte ushr 1 // Shift to get actual 7 bit value
+            value += nextByte shl (7 * count ++) // Add to total value
+         }
+         return value
+      } catch (e: Exception) {
+      } catch (e: IndexOutOfBoundsException) { debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+      } catch (e: Exception) { debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+      } catch (e: NotOpenException){ debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
       }
       return value
    }
@@ -214,20 +249,27 @@ open class Buffer(
    {
       var SaveNum = readInt32()
       val LoadUCS2Char = SaveNum < 0
-      if (LoadUCS2Char)
-         SaveNum = - SaveNum
-      if (SaveNum > NAME_SIZE)
-         throw ArrayIndexOutOfBoundsException()
-      if (SaveNum == 0) return ""
-      return if (LoadUCS2Char)
-         readBytes(SaveNum * 2).toString(Charset.forName("UTF-16"))
-      else
+      try
       {
-         val bytes = readBytes(SaveNum)
-         String(bytes , 0 , bytes.size - 1 , Charset.forName("UTF-8"))
+         if (LoadUCS2Char)
+            SaveNum = - SaveNum
+         if (SaveNum > NAME_SIZE)
+            throw ArrayIndexOutOfBoundsException()
+         if (SaveNum == 0) return ""
+         return if (LoadUCS2Char)
+            readBytes(SaveNum * 2).toString(Charset.forName("UTF-16"))
+         else
+         {
+            val bytes = readBytes(SaveNum)
+            String(bytes , 0 , bytes.size - 1 , Charset.forName("UTF-8"))
+         }
+      } catch (e: Exception) {
+      } catch (e: IndexOutOfBoundsException) { debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+      } catch (e: Exception) { debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+      } catch (e: NotOpenException){ debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
       }
+      return readBytes(SaveNum * 2).toString(Charset.forName("UTF-16"))
    }
-
    fun readName() : String?
    {
       val bHardcoded = readBit()
@@ -365,17 +407,26 @@ open class Buffer(
       totalBits -= decrease
       bits -= decrease
 
-      while (bits > 0&&cur.nextBuffer != null)
+      try
       {
-         cur = cur.nextBuffer !!
-         decrease = min(cur.localTotalBits , bits)
-         cur.localTotalBits -= decrease
-         cur.posBits += decrease
-         totalBits -= decrease
-         bits -= decrease
+         while (bits > 0&&cur.nextBuffer != null)
+         {
+            cur = cur.nextBuffer !!
+            decrease = min(cur.localTotalBits , bits)
+            cur.localTotalBits -= decrease
+            cur.posBits += decrease
+            totalBits -= decrease
+            bits -= decrease
+         }
+         if (bits > 0)
+            //throw
+            throw IndexOutOfBoundsException()
+         //catch (or die)
+      } catch (e: Exception) {
+} catch (e: IndexOutOfBoundsException) { debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+} catch (e: Exception) { debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+} catch (e: NotOpenException){ debugln { ("Buffer is throwing : $e ${e.stackTrace} ${e.message} ${e.cause}") }
+}
       }
-      if (bits > 0)
-         throw IndexOutOfBoundsException()
-   }
 
 }

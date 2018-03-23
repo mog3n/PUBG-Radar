@@ -1,6 +1,6 @@
 package pubgradar
 
-import main.util.Settings
+import pubgradar.util.settings.Settings
 import pubgradar.ui.GLMap
 import java.util.Collections.newSetFromMap
 import java.util.concurrent.ConcurrentHashMap

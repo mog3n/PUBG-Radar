@@ -2,6 +2,7 @@ package pubgradar
 
 import com.badlogic.gdx.math.Vector2
 import org.pcap4j.core.BpfProgram.BpfCompileMode.OPTIMIZE
+import org.pcap4j.core.NotOpenException
 import org.pcap4j.core.PcapNetworkInterface
 import org.pcap4j.core.PcapNetworkInterface.PromiscuousMode.PROMISCUOUS
 import org.pcap4j.core.Pcaps
@@ -10,6 +11,7 @@ import pubgradar.SniffOption.PPTPFilter
 import pubgradar.SniffOption.PortFilter
 import pubgradar.deserializer.packets
 import pubgradar.deserializer.parsePackets
+import pubgradar.deserializer.proc_raw_packet
 import java.io.File.separator
 import java.net.Inet4Address
 import java.net.InetAddress
@@ -38,38 +40,33 @@ enum class SniffOption
 
 val settingHome = "${System.getProperty("user.home")}$separator.pubgradar"
 
-class Sniffer
-{
+class Sniffer {
 
-   companion object : GameListener
-   {
+   companion object : GameListener {
 
-      override fun onGameOver()
-      {
+      override fun onGameOver() {
       }
 
-      private val nif : PcapNetworkInterface
-      val targetAddr : Inet4Address
-      val sniffOption : SniffOption
+      private val nif: PcapNetworkInterface
+      val targetAddr: Inet4Address
+      val sniffOption: SniffOption
       var selfCoords = Vector2()
 
-      init
-      {
+      init {
          register(this)
 
-         val nif : PcapNetworkInterface?
-         val sniffOption : SniffOption?
+         val nif: PcapNetworkInterface?
+         val sniffOption: SniffOption?
          val devs = Pcaps.findAllDevs()
 
          val choices = ArrayList<DevDesc>()
          for (dev in devs)
             dev.addresses
-                .filter { it.address is Inet4Address }
-                .mapTo(choices) { DevDesc(dev , it.address as Inet4Address) }
+                    .filter { it.address is Inet4Address }
+                    .mapTo(choices) { DevDesc(dev, it.address as Inet4Address) }
 
-         if (choices.isEmpty())
-         {
-            System.exit(- 1)
+         if (choices.isEmpty()) {
+            System.exit(-1)
          }
 
          val devDesc = choices.first { it.address.hostAddress == Args[0] }
@@ -88,80 +85,70 @@ class Sniffer
       val mode = PROMISCUOUS
       const val timeout = 1
 
-      const val PPTPFlag : Byte = 0b0011_0000
-      const val ACKFlag : Byte = 0b1000_0000.toByte()
+      const val PPTPFlag: Byte = 0b0011_0000
+      const val ACKFlag: Byte = 0b1000_0000.toByte()
 
-      fun ByteArray.toIntBE(pos : Int , num : Int) : Int
-      {
+      fun ByteArray.toIntBE(pos: Int, num: Int): Int {
          var value = 0
          for (i in 0 until num)
             value = value or ((this[pos + num - 1 - i].toInt() and 0xff) shl 8 * i)
          return value
       }
 
-      fun parsePPTPGRE(raw : ByteArray) : Packet?
-      {
+      fun parsePPTPGRE(raw: ByteArray): Packet? {
          var i = 0
          if (raw[i] != PPTPFlag) return null//PPTP
-         i ++
+         i++
          val hasAck = (raw[i] and ACKFlag) != 0.toByte()
-         i ++
-         val protocolType = raw.toIntBE(i , 2)
+         i++
+         val protocolType = raw.toIntBE(i, 2)
          i += 2
          if (protocolType != 0x880b) return null
-         val payloadLength = raw.toIntBE(i , 2)
+         val payloadLength = raw.toIntBE(i, 2)
          i += 2
-         val callID = raw.toIntBE(i , 2)
+         val callID = raw.toIntBE(i, 2)
          i += 2
-         val seq = raw.toIntBE(i , 4)
+         val seq = raw.toIntBE(i, 4)
          i += 4
-         if (hasAck)
-         {
-            val ack = raw.toIntBE(i , 4)
+         if (hasAck) {
+            val ack = raw.toIntBE(i, 4)
             i += 4
          }
          if (raw[i] != 0x21.toByte()) return null//not ipv4
-         i --
+         i--
          raw[i] = 0
-         val pppPkt = PppSelector.newPacket(raw , i , raw.size - i)
+         val pppPkt = PppSelector.newPacket(raw, i, raw.size - i)
          return pppPkt.payload
       }
 
-      fun udp_payload(packet : Packet) : UdpPacket?
-      {
-         return when (sniffOption)
-         {
+      fun udp_payload(packet: Packet): UdpPacket? {
+         return when (sniffOption) {
             PortFilter -> packet
             PPTPFilter -> parsePPTPGRE(packet[IpV4Packet::class.java].payload.rawData)
 
          }?.get(UdpPacket::class.java)
       }
 
-      fun sniffLocationOnline()
-      {
-         val handle = nif.openLive(snapLen , mode , timeout)
-         val filter = when (sniffOption)
-         {
+      fun sniffLocationOnline() {
+         val handle = nif.openLive(snapLen, mode, timeout)
+         val filter = when (sniffOption) {
             PortFilter -> "udp portrange 7000-7999"
             PPTPFilter -> "ip[9]=47"
          }
-         handle.setFilter(filter , OPTIMIZE)
+         handle.setFilter(filter, OPTIMIZE)
          thread(isDaemon = true) {
-            handle.loop(- 1) { packet : Packet? ->
-               try
-               {
-                  packet !!
+            handle.loop(-1) { packet: Packet? ->
+               try {
+                  packet!!
                   val ip = packet[IpPacket::class.java]
                   val udp = udp_payload(packet) ?: return@loop
                   val raw = udp.payload.rawData
 
-                  if (udp.header.dstPort.valueAsInt() in 7000 .. 7999)
-                     packets.add(Pair(raw , false))
-                  else if (udp.header.srcPort.valueAsInt() in 7000 .. 7999)
-                     packets.add(Pair(raw , true))
-               }
-               catch (e : Exception)
-               {
+                  if (udp.header.dstPort.valueAsInt() in 7000..7999)
+                     packets.add(Pair(raw, false))
+                  else if (udp.header.srcPort.valueAsInt() in 7000..7999)
+                     packets.add(Pair(raw, true))
+               } catch (e: Exception) {
                }
             }
          }
@@ -169,7 +156,7 @@ class Sniffer
       }
 
 
-      fun sniffLocationOffline()
+        fun sniffLocationOffline()
       {
          thread(isDaemon = true) {
             //                val files = arrayOf("d:\\test10.pcap", "d:\\test11.pcap", "d:\\test12.pcap")
@@ -179,22 +166,22 @@ class Sniffer
             {
                val handle = Pcaps.openOffline(file)
 
-               while (true)
-               {
-                  try
-                  {
+               while (true) {
+                  try {
                      val packet = handle.nextPacket ?: break
                      val ip = packet[IpPacket::class.java]
                      val udp = Sniffer.udp_payload(packet) ?: continue
                      val raw = udp.payload.rawData
 
-                     if (udp.header.dstPort.valueAsInt() in 7000 .. 7999)
-                        packets.add(Pair(raw , false))
-                     else if (udp.header.srcPort.valueAsInt() in 7000 .. 7999)
-                        packets.add(Pair(raw , true))
+                     if (udp.header.dstPort.valueAsInt() in 7000..7999)
+                        packets.add(Pair(raw, false))
+                     else if (udp.header.srcPort.valueAsInt() in 7000..7999)
+                        packets.add(Pair(raw, true))
 
-                  }
-                  catch (e : Exception)
+                  } catch (e: Exception) {
+                  } catch (e: IndexOutOfBoundsException) {
+                  } catch (e: Exception) {
+                  } catch (e: NotOpenException)
                   {
                      e.printStackTrace()
                   }

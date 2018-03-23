@@ -1,4 +1,4 @@
-package main.util
+package pubgradar.util.settings
 
 
 import com.badlogic.gdx.Input
@@ -20,15 +20,17 @@ class Settings
        val healthBarWidth : Float = 15000f ,
        val healthBarHeight : Float = 2000f ,
        val directionRadius : Float = 16000f ,
-
        val fov : Float = 90f ,
-
        val aimLineWidth : Float = 1000f ,
        val aimLineRange : Float = 50000f ,
        val aimCircleRadius : Float = 200f ,
        val firingLineLength : Float = 20000f ,
        val itemZoomThreshold : Float = 0.06f ,
        val airDropTextScale : Float = 1000f ,
+
+       //
+       // Scales
+       //
        val itemScale : Float = 16f ,
        val staticItemScale : Float = 200f ,
        val mapMarkerScale : Float = 150f ,
@@ -39,10 +41,17 @@ class Settings
        val corpseScale : Float = 30f ,
        val redzoneBombScale : Float = 30f ,
        val aimTimeThreshold : Int = 1000 ,
+
+       //
+       // Timers
+       //
        val attackLineDuration : Int = 1000 ,
        val attackMeLineDuration : Int = 10000 ,
        val firingLineDuration : Int = 500 ,
 
+       //
+       // Decent Weapons
+       //
        val M16A4 : Boolean = false ,
        val AWM : Boolean = false ,
        val M24 : Boolean = false ,
@@ -61,6 +70,19 @@ class Settings
        val UMP : Boolean = false ,
        val Vector : Boolean = false ,
        val UZI : Boolean = false ,
+
+       //
+       // Pistols
+       //
+       val G18 : Boolean = false,
+       val Rhino45 : Boolean = false,
+       val M1911 : Boolean = false,
+       val R1895 : Boolean = false,
+       val M9 : Boolean = false,
+
+       //
+       // Meds
+       //
        val Bandage : Boolean = false ,
        val MedKit : Boolean = false ,
        val FirstAid : Boolean = false ,
@@ -68,6 +90,9 @@ class Settings
        val EnergyDrink : Boolean = false ,
        val Syringe : Boolean = false ,
 
+       //
+       // Attachments
+       //
        var QDSnipe:Boolean = false,
        var ExSR :Boolean = false,
        var ExSMG:Boolean = false,
